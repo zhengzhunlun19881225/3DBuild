@@ -1,0 +1,22 @@
+{
+  "name": "ply-scene-explorer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build --configLoader native",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "3d-tiles-renderer": "^0.5.3",
+    "@sparkjsdev/spark": "2.2.0",
+    "three": "0.180.0",
+    "three-mesh-bvh": "0.9.1",
+    "three-player-controller": "^0.6.2"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}

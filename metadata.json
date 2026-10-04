@@ -1,0 +1,6 @@
+{
+  "name": "园区数字孪生三维可视化管理系统",
+  "description": "商务园区数字孪生三维可视化管理系统，支持园区总览、楼栋深入分析、BIM楼层剖切、房间空间详情与机器人场景智能漫游巡检。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

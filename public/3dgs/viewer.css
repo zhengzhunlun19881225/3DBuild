@@ -1,0 +1,13 @@
+:root { color-scheme: dark; font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; overflow: hidden; background: #060d17; color: #e0f2fe; }
+#viewport, canvas { display: block; width: 100vw; height: 100vh; outline: none; touch-action: none; }
+#loading { position: fixed; inset: 50% auto auto 50%; transform: translate(-50%, -50%); display: flex; align-items: center; flex-direction: column; gap: 16px; width: min(380px, 90vw); padding: 30px; border: 1px solid #0ea5e944; border-radius: 18px; background: #071222ed; box-shadow: 0 12px 60px #0005; }
+#loading strong { font-size: 16px; }
+#status { font-size: 12px; line-height: 1.7; color: #9db9cb; text-align: center; }
+progress { width: 100%; height: 4px; accent-color: #00c7ee; }
+.spinner { width: 28px; height: 28px; border: 2px solid #0ea5e933; border-top-color: #00c7ee; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+#hint { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); border: 1px solid #0ea5e933; background: #071222c9; border-radius: 24px; padding: 10px 20px; font-size: 11px; color: #bae6fd; white-space: nowrap; pointer-events: none; }
+button { background: #0ea5e9; border: 0; border-radius: 8px; padding: 9px 18px; font: inherit; color: white; cursor: pointer; }
+[hidden], body[data-state="ready"] #loading, body[data-state="error"] .spinner, body[data-state="error"] progress { display: none !important; }

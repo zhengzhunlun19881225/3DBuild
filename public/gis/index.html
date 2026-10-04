@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GIS 园区 · 笔村大路78号</title>
+  <link rel="stylesheet" href="./cesium/Widgets/widgets.css">
+  <link rel="stylesheet" href="./style.css">
+  <script>window.CESIUM_BASE_URL = new URL('./cesium/', location.href).href;</script>
+  <script src="./cesium/Cesium.js"></script>
+</head>
+<body>
+  <main id="map" aria-label="Cesium 三维园区地图"></main>
+  <section class="location glass">
+    <div class="eyebrow"><span class="dot"></span> CESIUM / DIGITAL CAMPUS</div>
+    <h1>广新·黄埔新质产业园</h1>
+    <p>广州市黄埔区笔村大路78号</p>
+    <div class="pills"><span>8 栋建筑</span><span>科技蓝 · 深色金属</span></div>
+    <small id="accuracy">地址级定位 · 朝向与尺寸待校准</small>
+  </section>
+  <nav class="toolbar glass" aria-label="GIS 地图控制">
+    <button id="home" class="active">定位园区</button><button id="top">俯视</button><button id="around">查看周边</button>
+    <span class="divider"></span><button id="labels" aria-pressed="true">楼栋标注</button><button id="calibrate" aria-expanded="false">位置校准</button>
+  </nav>
+  <section id="calibration" class="glass" hidden aria-label="模型位置校准">
+    <header><strong>模型位置校准</strong><button id="close" aria-label="关闭校准">×</button></header>
+    <p>使用 WGS84 坐标。当前为地址级定位，园区边界、朝向和比例尚未实测。</p>
+    <form id="position-form">
+      <label>经度<input name="longitude" type="number" step="0.000001" min="-180" max="180" required></label>
+      <label>纬度<input name="latitude" type="number" step="0.000001" min="-85" max="85" required></label>
+      <label>朝向 °<input name="heading" type="number" step="1" min="-360" max="360" required></label>
+      <label>地面高程 m<input name="height" type="number" step="0.1" min="0" max="9000" required></label>
+      <label>模型比例<input name="scale" type="number" step="0.01" min="0.05" max="10" required></label>
+      <div class="actions"><button type="submit" class="active">应用并保存</button><button type="button" id="defaults">恢复初始</button></div>
+    </form>
+  </section>
+  <section id="selection" class="glass" hidden><strong id="building-name"></strong><p>点击进入园区楼栋分析</p><button id="detail" class="active">查看楼栋 →</button><button id="clear">取消选择</button></section>
+  <div id="status" class="glass" role="status">正在启动 GIS 地图…</div>
+  <button id="retry" hidden>重新加载</button>
+  <footer class="glass">左键平移 · 滚轮缩放 · 中键或 Ctrl + 左键旋转 <span id="coords"></span></footer>
+  <script type="module" src="./viewer.js"></script>
+</body>
+</html>

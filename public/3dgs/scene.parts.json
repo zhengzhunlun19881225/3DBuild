@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "bytes": 466190227,
+  "sourceSha256": "5e4b17a473732ea378a05259b9aed77dadfc678d58f3a7ca66785ae1f2276bc6",
+  "parts": [
+    {
+      "url": "scene-parts/part-00.bin",
+      "bytes": 67108864,
+      "sha256": "4d5d77ed0002490d9ac97484a7b125ef3e46b086f619a0f4916267321b1ad09f"
+    },
+    {
+      "url": "scene-parts/part-01.bin",
+      "bytes": 67108864,
+      "sha256": "dc46867134a86548d803329eead1088a4e4a48216da44fbb3073cd50c3de92f6"
+    },
+    {
+      "url": "scene-parts/part-02.bin",
+      "bytes": 67108864,
+      "sha256": "764b288cbe342878fa670ae7d3a2bab00f08348d4f0e4a59620a11ccbf651e65"
+    },
+    {
+      "url": "scene-parts/part-03.bin",
+      "bytes": 67108864,
+      "sha256": "1c6f4c71e8046cfbf22c32a55473455b4ff0cd78f725a2fde940843597608523"
+    },
+    {
+      "url": "scene-parts/part-04.bin",
+      "bytes": 67108864,
+      "sha256": "f17aebb81cd7353a600f85c5ea52ba285bdf48797ada9d84433bf04c1c80fd1e"
+    },
+    {
+      "url": "scene-parts/part-05.bin",
+      "bytes": 67108864,
+      "sha256": "05194e3e56953f9bd591db69b120c5bf44545d75be36e5f30e88e5d2ed6fd3ab"
+    },
+    {
+      "url": "scene-parts/part-06.bin",
+      "bytes": 63537043,
+      "sha256": "76ee5acae0827bc0d71659df940c08d841a98d32145084f83cd8556af42d0ffc"
+    }
+  ]
+}

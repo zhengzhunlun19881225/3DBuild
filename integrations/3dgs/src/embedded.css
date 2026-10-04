@@ -1,0 +1,20 @@
+/* The campus app supplies the header; keep the source controls below it. */
+.topbar { display: none; }
+.panel { top: 16px; left: 16px; width: 300px; max-height: calc(100dvh - 86px); }
+.panel-toggle { top: 28px; left: 316px; }
+.view-label { top: 28px; left: 366px; }
+.panel-collapsed .panel-toggle { left: 16px; }
+.panel-collapsed .view-label { left: 112px; }
+.character-card { margin-top: 20px; border-top: 1px solid #ffffff14; padding-top: 16px; }
+.character-card p { color: #99b0a4; font-size: 11px; line-height: 1.7; }
+.character-card button { width: 100%; color: #c5e7b6; border-color: #b2e29d55; background: #b2e29d10; font-size: 11px; }
+button:disabled { cursor: wait; opacity: .45; }
+.bottom-bar { padding: 0 20px; }
+#status { max-width: min(580px, calc(100vw - 390px)); left: calc(50% + 160px); pointer-events: none; }
+@media (max-width: 760px) {
+  .panel { left: 10px; top: 12px; width: 260px; padding: 18px; }
+  .panel-toggle { left: 270px; top: 24px; }
+  .panel-collapsed .panel-toggle { left: 10px; }
+  .view-label { top: 24px; left: auto; right: 12px; }
+  #status { left: auto; right: 12px; max-width: 80vw; transform: none; }
+}
