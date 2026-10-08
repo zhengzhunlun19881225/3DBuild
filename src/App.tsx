@@ -11,6 +11,8 @@ import { ImportedCampusCanvas } from './components/ImportedCampusCanvas';
 import { GaussianScene } from './components/GaussianScene';
 import { CesiumCampus } from './components/CesiumCampus';
 import { WeatherController } from './components/WeatherController';
+import { SkyTimeController } from './components/SkyTimeController';
+import { readSkySettings, SKY_STORAGE, SkySettings } from './types/sky';
 import { DEFAULT_WEATHER, WeatherSettings } from './types/weather';
 import { Navbar } from './components/Navbar';
 import { OverviewHUD } from './components/OverviewHUD';
@@ -34,6 +36,7 @@ export default function App() {
   const [activeCampus, setActiveCampus] = useState<CampusEntity>(CAMPUS_AC_TECH);
   const [resetToken, setResetToken] = useState(0);
   const [weather, setWeather] = useState<WeatherSettings>({...DEFAULT_WEATHER});
+  const [sky, setSky] = useState<SkySettings>(readSkySettings);
   const [isCampusSwitcherOpen, setIsCampusSwitcherOpen] = useState<boolean>(false);
   const [isObjectExplorerOpen, setIsObjectExplorerOpen] = useState<boolean>(false);
 
@@ -57,6 +60,22 @@ export default function App() {
   } | null>(null);
 
   const isLight = themeMode === 'light';
+  useEffect(() => {
+    if (!sky.playing) {
+      try { localStorage.setItem(SKY_STORAGE, JSON.stringify(sky)); } catch {}
+    }
+  }, [sky]);
+  useEffect(() => {
+    if (!sky.enabled || !sky.playing || (viewLevel !== 'overview' && viewLevel !== 'roam')) return;
+    let previous = performance.now();
+    const tick = window.setInterval(() => {
+      const now = performance.now();
+      const elapsed = Math.min((now - previous) / 1000, 1);
+      previous = now;
+      if (!document.hidden) setSky(p => ({ ...p, minutes: (p.minutes + elapsed * 1440 / (p.cycleMinutes * 60)) % 1440 }));
+    }, 100);
+    return () => window.clearInterval(tick);
+  }, [sky.enabled, sky.playing, sky.cycleMinutes, viewLevel]);
 
   // Toggle theme mode between light and dark
   const handleToggleTheme = () => {
@@ -192,6 +211,7 @@ export default function App() {
         if (building) handleSelectBuilding(building);
       }} /> : viewLevel === '3dgs' ? <GaussianScene resetToken={resetToken} /> : <CampusCanvas
         weather={weather}
+        sky={sky}
         resetToken={resetToken}
         viewLevel={viewLevel}
         campus={activeCampus}
@@ -256,6 +276,7 @@ export default function App() {
           <button className="rounded-lg px-3 py-2 hover:bg-slate-800" onClick={() => handleNavigate(viewLevel === 'roam' ? 'overview' : 'roam')}>{viewLevel === 'roam' ? '退出巡游' : '航拍巡游'}</button>
           <button className="rounded-lg px-3 py-2 hover:bg-slate-800" aria-pressed={showSurroundingBuildings} onClick={() => setShowSurroundingBuildings(v => !v)}>{showSurroundingBuildings ? '隐藏周边' : '显示周边'}</button>
           <WeatherController value={weather} onChange={setWeather} />
+          <SkyTimeController value={sky} onChange={setSky} />
         </div>
       )}
 

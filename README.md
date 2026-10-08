@@ -24,6 +24,8 @@ View your app in AI Studio: https://ai.studio/apps/b8ae7970-9828-46f6-af81-d0602
 
 默认园区已接入根目录 OBJ，提供科技金属 / 全息蓝图材质、8 栋楼栋选择和 35 个楼层的结构剖切。材质来源、MIT 许可和模型更新说明见 [园区模型与开源材质](docs/campus-materials.md)。
 
+天气按钮右侧新增天空时间控制器，支持日出、正午、日落、夜晚、时间滑杆、云量与自动昼夜循环，天空和园区光照同步变化。使用 Three.js 官方 Sky 模块，详见 [天空时间控制器](docs/campus-sky.md)。
+
 ## GitHub Pages
 
 仓库：https://github.com/zhengzhunlun19881225/3DBuild

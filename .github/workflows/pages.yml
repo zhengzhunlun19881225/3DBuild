@@ -27,6 +27,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
       - run: node --test integrations/3dgs/tests/scene-parts.test.js
+      - run: node --import tsx --test scripts/tests/campus-sky.test.ts
       - run: pnpm run build
       - run: node scripts/prepare-pages.mjs
       - uses: actions/configure-pages@v5

@@ -5,8 +5,11 @@ import { CampusEntity } from '../models/campusModel';
 import { CAMPUS_BUILDINGS, B1A_FLOORS, PATROL_WAYPOINTS } from '../data/campusData';
 import { generateAMapTexture } from '../utils/amapMapGenerator';
 import { RooftopCameraNode, ROOFTOP_CAMERAS } from './RooftopSurveillanceModal';
+import { CampusSky } from '../sky/CampusSky';
+import { DEFAULT_SKY, formatSkyTime, SkySettings } from '../types/sky';
 
 export interface ThreeCampusCanvasProps {
+  sky?: SkySettings;
   viewLevel: ViewLevel;
   campus?: CampusEntity;
   selectedBuildingId: string | null;
@@ -28,6 +31,7 @@ export interface ThreeCampusCanvasProps {
 }
 
 export const ThreeCampusCanvas: React.FC<ThreeCampusCanvasProps> = ({
+  sky = DEFAULT_SKY,
   viewLevel,
   campus,
   selectedBuildingId,
@@ -48,6 +52,8 @@ export const ThreeCampusCanvas: React.FC<ThreeCampusCanvasProps> = ({
   onHoverObject
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const skyState = useRef({ sky, themeMode });
+  skyState.current = { sky, themeMode };
 
   const themeObjectsRef = useRef<{
     scene?: THREE.Scene;
@@ -199,7 +205,7 @@ export const ThreeCampusCanvas: React.FC<ThreeCampusCanvasProps> = ({
     // 2. CAMERA SETUP
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || window.innerHeight;
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.5, 1000);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.5, 20000);
     camera.position.set(40, 32, 50);
 
     // 3. RENDERER
@@ -1332,6 +1338,7 @@ export const ThreeCampusCanvas: React.FC<ThreeCampusCanvasProps> = ({
     let clock = new THREE.Clock();
     let scanScale = 1;
     let shuttleAngle = 0;
+    const skyEffects = new CampusSky(scene, renderer, hemiLight, dirLight, rimLight);
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -1583,6 +1590,11 @@ export const ThreeCampusCanvas: React.FC<ThreeCampusCanvasProps> = ({
       stateRef.current.camTarget.lerp(lookTarget, 0.06);
       camera.lookAt(stateRef.current.camTarget);
 
+      const outdoor = stateRef.current.viewLevel === 'overview' || stateRef.current.viewLevel === 'roam';
+      skyEffects.update(skyState.current.sky, delta, skyState.current.themeMode === 'dark', outdoor);
+      container.dataset.skyEnabled = String(skyState.current.sky.enabled && outdoor);
+      container.dataset.skyTime = formatSkyTime(skyState.current.sky.minutes);
+
       renderer.render(scene, camera);
     };
 
@@ -1604,6 +1616,7 @@ export const ThreeCampusCanvas: React.FC<ThreeCampusCanvasProps> = ({
     // CLEANUP
     return () => {
       cancelAnimationFrame(animationFrameId);
+      skyEffects.dispose();
       resizeObserver.disconnect();
       container.removeEventListener('mousedown', handlePointerDown);
       window.removeEventListener('mousemove', handlePointerMove);

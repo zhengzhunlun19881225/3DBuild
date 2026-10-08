@@ -13,6 +13,8 @@ import { createCampusMaterials, isCampusRoof, MaterialStyle } from '../materials
 import modelUrl from '../../campus_aerial_estimated_scale.obj?url';
 import { CampusWeather } from '../weather/CampusWeather';
 import type { WeatherSettings } from '../types/weather';
+import { CampusSky } from '../sky/CampusSky';
+import { DEFAULT_SKY, formatSkyTime } from '../types/sky';
 
 type Props = ThreeCampusCanvasProps & { resetToken: number; weather: WeatherSettings };
 type ModelMesh = THREE.Mesh<THREE.BufferGeometry, THREE.Material>;
@@ -51,7 +53,7 @@ export function ImportedCampusCanvas(props: Props) {
     const floorBounds = new Map<string, THREE.Box3>();
     const labels: { node: HTMLButtonElement; position: THREE.Vector3; id: string }[] = [];
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 20000);
     camera.position.set(100, 95, 125);
     let renderer: THREE.WebGLRenderer;
     try {
@@ -97,6 +99,7 @@ export function ImportedCampusCanvas(props: Props) {
     scene.environmentIntensity = 0.65;
     room.dispose();
     pmrem.dispose();
+    const skyEffects = new CampusSky(scene, renderer, hemi, key, rim);
 
     const renderTarget = new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType });
     renderTarget.samples = Math.min(renderer.capabilities.maxSamples, 4);
@@ -113,6 +116,7 @@ export function ImportedCampusCanvas(props: Props) {
     grid.position.y = -0.35;
     scene.add(grid);
     const baseMaterial = new THREE.MeshBasicMaterial({ color: '#050f1d' });
+    const dayGround = new THREE.Color('#627e93');
     const base = new THREE.Mesh(new THREE.PlaneGeometry(800, 800), baseMaterial);
     base.rotation.x = -Math.PI / 2;
     base.position.y = -0.36;
@@ -359,6 +363,13 @@ export function ImportedCampusCanvas(props: Props) {
       }
       controls.update();
       const outdoor = p.viewLevel === 'overview' || p.viewLevel === 'roam';
+      const skySettings = p.sky ?? DEFAULT_SKY;
+      skyEffects.update(skySettings, delta, dark, outdoor, p.weather.mode !== 'clear');
+      base.scale.setScalar(skySettings.enabled && outdoor ? .25 : 1);
+      if (skySettings.enabled && outdoor) {
+        const daylight = THREE.MathUtils.smoothstep(Math.sin((skySettings.minutes / 60 - 6) / 24 * Math.PI * 2), -.1, .35);
+        baseMaterial.color.set(dark ? '#050f1d' : '#c4d6df').lerp(dayGround, daylight * (dark ? .35 : .6));
+      } else baseMaterial.color.set(dark ? '#050f1d' : '#c4d6df');
       weatherEffects.update(delta, p.weather, outdoor, height * renderer.getPixelRatio());
       // Bright snow should read as a surface, not bloom across the entire campus.
       const snowScene = outdoor && p.weather.mode === 'snow' && p.weather.groundEffect;
@@ -367,6 +378,8 @@ export function ImportedCampusCanvas(props: Props) {
       container.dataset.weatherMode = p.weather.mode;
       container.dataset.weatherGround = String(p.weather.groundEffect);
       container.dataset.weatherPaused = String(p.weather.paused);
+      container.dataset.skyEnabled = String(skySettings.enabled && outdoor);
+      container.dataset.skyTime = formatSkyTime(skySettings.minutes);
       for (const label of labels) {
         projected.copy(label.position).project(camera);
         const visible = labelsVisibleRef.current && p.viewLevel === 'overview' && projected.z < 1 && projected.z > -1;
@@ -384,6 +397,7 @@ export function ImportedCampusCanvas(props: Props) {
       resize.disconnect();
       controls.dispose();
       weatherEffects.dispose();
+      skyEffects.dispose();
       renderer.domElement.removeEventListener('pointerdown', down);
       renderer.domElement.removeEventListener('pointerup', up);
       renderer.domElement.removeEventListener('pointermove', move);
